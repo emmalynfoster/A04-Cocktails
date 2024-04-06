@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="cocktails.css">
+    <title>Random Cocktail</title>
+</head>
+<body>
+    <div id="container">
+        <h1 id="title">Random Cocktail Generator</h1>
+        <img src="Cocktail-img.svg" alt="fruit-decal" style="width: 200px; height: 200px; margin-left:30px;">
+    </div>
+ 
+    <button onclick="getRandomCocktail()" class="get_random">Get Random Cocktail</button><br>
+    <button onclick="storeLikedDrinks()" class="random_button">Like</button>
+    <button onclick="dislike()" class="random_button">Dislike</button>
+    <button onclick="getRecommendation()" class="random_button">Get recommendations from your likes</button>
+    <div id = "textContainer">
+        <div id="cocktailInfo"></div>
+        <div id="likedDrinks"><span id="category">Liked drinks:</span></div>
+        <div id ="recommendation"><span id="category">Recommendations:</span></div>
+    </div>
+
+
+
+    <script src="cocktails.js"></script>
+    <script>
+        const ingredientSet = new IngredientSet();
+        let cocktail = {};
+        let cocktails = [];
+        let like = '';
+        let recommendations = [];
+
+
+
+        async function getRandomCocktail() {
+            cocktail = await ingredientSet.getRandomRecipe();
+            document.getElementById('cocktailInfo').innerHTML = `
+                <h2>${cocktail.name}</h2>
+                <img src="${cocktail.imageURL}" style="width: 250px; height: 250px; border: thick solid #F8D210;">
+                <p>Ingredients: ${cocktail.ingredients.join(', ')}</p>
+                
+            `;
+        }
+
+        async function dislike() {
+            currentCocktail = cocktails.findIndex(c => c.name === cocktail.name);
+            if(cocktails.includes(cocktail)){
+                cocktails.splice(currentCocktail, 1);
+                like.parentNode.removeChild(like);
+                
+            };
+            cocktail = await ingredientSet.getRandomRecipe();
+            document.getElementById('cocktailInfo').innerHTML = `
+                <h2>${cocktail.name}</h2>
+                <img src="${cocktail.imageURL}" style="width: 250px; height: 250px; border: thick solid #F8D210;">
+                <p>Ingredients: ${cocktail.ingredients.join(', ')}</p>
+                
+            `;
+        }
+
+        async function getRecommendation(){
+            randomCocktailIdx = Math.floor(Math.random() * cocktails.length);
+            randomCocktail = cocktails[randomCocktailIdx];
+            ingredient = randomCocktail.ingredients[randomCocktailIdx]
+            let recommendation = await ingredientSet.getRecommendation(ingredient); 
+            console.log(recommendation)
+            repeat = cocktails.find((element) => element.name == recommendation);
+            console.log(repeat);
+            if(recommendations.includes(recommendation) || recommendation == cocktails.find((element) => element.name == recommendation))
+            {return;
+            } else {
+                recommendations.push(recommendation);   
+            }
+            display = document.createElement('p');
+            display.innerHTML = `${recommendation}`;   
+            document.getElementById("recommendation").appendChild(display);
+        }
+
+        function storeLikedDrinks(){
+            if(cocktails.includes(cocktail)){
+                return;
+            }
+            else{
+            cocktails.push(cocktail);
+            like = document.createElement('p');
+            like.innerHTML = `${cocktail.name}`
+            document.getElementById('likedDrinks').appendChild(like)
+            }
+        }   
+
+        const fontColors = ['#FA26A0', '#F51720', '#fc7e08'];
+        let currColor = 0;
+
+        function changeColor(){
+        title = document.getElementById("title");    
+        title.style.color = fontColors[currColor];
+        currColor = (currColor + 1) % fontColors.length;
+        }
+
+        const flashInterval = setInterval(changeColor, 500);
+
+    
+
+    </script>
+</body>
+</html>
