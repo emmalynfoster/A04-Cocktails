@@ -4,7 +4,7 @@
 This application makes use of public APIs to create a Random Cocktail Generator. 
 The public API being The Cocktail DB, located here: https://www.thecocktaildb.com/api.php
 I used two APIs to complete this task: 
-- Lookup a random cocktails
+- Lookup a random cocktail
 - Search by ingredient
 
 ## Features
